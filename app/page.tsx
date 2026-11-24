@@ -6,6 +6,7 @@ import { accommodations } from "@/data/accommodations";
 import LoadingState from "@/components/shared/LoadingState";
 import CategoriesNavigation from "@/components/home/CategoriesNavigation";
 import AccommodationGrid from "@/components/home/AccommodationGrid";
+import SearchFilters from "@/components/home/SearchFilters";
 import Link from "next/link";
 import { useSearch } from "@/components/shared/SearchContext";
 
@@ -51,6 +52,7 @@ export default function Home() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
+      <SearchFilters />
       <CategoriesNavigation
         categories={categories}
         selectedCategory={selectedCategory}

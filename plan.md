@@ -28,7 +28,11 @@ components/
 ├── home/
 │   ├── CategoriesNavigation.tsx
 │   ├── CategoryItem.tsx
-│   └── AccommodationGrid.tsx
+│   ├── AccommodationGrid.tsx
+│   ├── SearchFilters.tsx      # [NUEVO] Barra de filtros tipo Airbnb
+│   ├── DestinationPanel.tsx   # [NUEVO] Panel de ciudades fijas
+│   ├── DatePanel.tsx          # [NUEVO] Calendario casero
+│   └── GuestsPanel.tsx        # [NUEVO] Controles de viajeros
 ├── catalog/
 │   ├── ResultsHeader.tsx
 │   ├── ResultsCounter.tsx
@@ -97,16 +101,19 @@ types/
 ```
 F1 (Tipos y datos) 
   → F2 (Componentes compartidos) 
-    → F3 (Navbar + Layout) 
-      → F4 (Home) 
-        → F5 (Catalog) 
-          → F6 (Room Detail) 
-            → F7 (Navigation) 
-              → F8 (Responsive) 
-                → F9 (Validación)
+    → F2.5 (Search Filters — barra tipo Airbnb) 
+      → F3 (Navbar + Layout) 
+        → F4 (Home) 
+          → F5 (Catalog) 
+            → F6 (Room Detail) 
+              → F7 (Navigation) 
+                → F8 (Responsive) 
+                  → F9 (Validación)
 ```
 
 Cada fase depende de la anterior. No saltar fases.
+
+> **Nota:** F2.5 se ejecuta después de F2 porque los filtros reutilizan componentes compartidos (como `LoadingState`), pero antes de F3 porque SearchFilters se integra directamente en Home.
 
 ---
 
@@ -276,17 +283,40 @@ Interfaces a definir:
 
 ---
 
-## 📊 RESUMEN
+## 🔷 FASE 2.5: Search Filters — Barra de búsqueda tipo Airbnb
 
-| Fase | Archivos nuevos | Archivos modificados |
+**Nuevo feature aprobado:** 2026-11-24
+**Basado en:** `airbnb-filtro-1.png` a `airbnb-filtro-4.png`
+
+### Decisiones tomadas
+
+| # | Asunto | Decisión |
 |---|---|---|
-| F1 - Data Layer | 2 | 0 |
-| F2 - Shared Components | 6 | 0 |
-| F3 - Layout | 4 | 1 (layout.tsx) |
-| F4 - Home | 3 | 1 (page.tsx) |
-| F5 - Catalog | 5 | 1 (catalog/page.tsx) |
-| F6 - Room Detail | 13 | 1 (rooms/[id]/page.tsx) |
-| F7 - Navigation | 0 | 0 (verificar) |
-| F8 - Responsive | 0 | 0 (verificar) |
-| F9 - Validation | 0 | 0 (verificar) |
-| **Total** | **33** | **3** |
+| 1 | 🏙️ Destino | Ciudades **fijas** (lista predefinida) |
+| 2 | 📅 Fechas | Calendario casero en grilla (sin librería externa). Inputs `date` nativos como fallback en móvil |
+| 3 | 👥 Viajeros | Adultos min 1 / max 10, Niños min 0 / max 10, Bebés min 0 / max 5, Mascotas min 0 / max 5 |
+| 4 | 🔍 Botón Buscar | Redirige a `/catalog?q={destino}` con parámetros de URL adicionales |
+
+### Archivos a crear (4): en `components/home/`
+
+| Componente | Props | Descripción |
+|---|---|---|
+| `SearchFilters.tsx` | — | Barra horizontal con 3 segmentos clickeables y botón Buscar. Estado local: `activePanel`, `destination`, `checkIn`, `checkOut`, `guests` |
+| `DestinationPanel.tsx` | `value`, `onSelect` | Panel desplegable con lista de ciudades fijas |
+| `DatePanel.tsx` | `checkIn`, `checkOut`, `onChange` | Calendario en grilla de dos meses. Clic en día fija entrada, segundo clic fija salida, resalta rango |
+| `GuestsPanel.tsx` | `value: GuestCount`, `onChange` | Contadores independientes: adultos, niños, bebés, mascotas con controles +/- |
+
+### Ciudades fijas para DestinationPanel
+
+"Cualquier destino", "Madrid", "Barcelona", "Sevilla", "Valencia", "Granada", "Málaga", "Bilbao", "París", "Roma", "Lisboa"
+
+### Lógica de SearchFilters
+
+- `activePanel: "destination" | "dates" | "guests" | null`
+- Al hacer clic en un segmento se abre su panel y se cierran los otros
+- Al hacer clic fuera se cierra todo
+- Al hacer clic en "Buscar" → redirige a `/catalog?q={destino}&checkIn={...}&checkOut={...}&adults={...}&children={...}`
+
+### Archivo a modificar
+
+- `app/page.tsx` — integrar `SearchFilters` entre Navbar y `CategoriesNavigation`; combinar filtro de destino con filtro de categoría y búsqueda por texto existentes

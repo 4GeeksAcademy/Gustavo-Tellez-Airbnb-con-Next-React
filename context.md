@@ -1,5 +1,7 @@
 # Contexto del Proyecto — Airbnb Clone
 
+> **Última actualización:** 2026-11-24
+
 ## 1. Resumen del Proyecto
 
 Este proyecto consiste en construir un clon visual de la interfaz de navegación y reserva de alojamientos de Airbnb.com utilizando Next.js 16, TypeScript y Tailwind CSS. El proyecto incluye tres vistas interconectadas — una página de inicio, una página de catálogo de búsqueda y una página de detalle de habitación — que permiten a los usuarios descubrir, explorar, comparar y evaluar alojamientos. Todos los componentes se construyen desde cero utilizando componentes funcionales de React y clases de utilidad de Tailwind, sin depender de librerías de UI preconstruidas.
@@ -93,7 +95,18 @@ Una tarjeta de reserva muestra el precio por noche, un contador de huéspedes co
 
 **Componentes reutilizables:** `Navbar`, `Rating` (o `RatingAndReviews`), `PricePerNight`, `LoadingState` se comparten con otras páginas.
 
-### 3.4 Componentes Compartidos
+### 3.4 Componentes de la Barra de Filtros (Home)
+
+Añadidos tras revisar las referencias `airbnb-filtro-1.png` a `airbnb-filtro-4.png`:
+
+| Componente | Responsabilidad | Información que Muestra | Interacciones |
+|---|---|---|---|
+| **SearchFilters** | Barra horizontal segmentada que agrupa los filtros de búsqueda tipo Airbnb. | 3 segmentos (Destino, Fechas, Viajeros) + botón "Buscar". | Click en segmento abre panel. Click fuera cierra todo. Click "Buscar" redirige a `/catalog?q={destino}`. |
+| **DestinationPanel** | Panel desplegable para seleccionar ciudad de destino. | Lista de 11 ciudades fijas: "Cualquier destino", "Madrid", "Barcelona", "Sevilla", "Valencia", "Granada", "Málaga", "Bilbao", "París", "Roma", "Lisboa". | Click selecciona ciudad y cierra panel. |
+| **DatePanel** | Calendario casero para selección de fechas de entrada y salida. | Grilla de dos meses con días, check-in y check-out seleccionados, rango resaltado. | Primer click fija check-in. Segundo click fija check-out. |
+| **GuestsPanel** | Panel desplegable para configurar viajeros y mascotas. | Adultos (1-10), Niños (0-10), Bebés (0-5), Mascotas (0-5). | Controles +/- independientes con límites. |
+
+### 3.5 Componentes Compartidos
 
 Los siguientes componentes se utilizan en múltiples vistas y deben implementarse una vez y reutilizarse:
 
@@ -153,8 +166,13 @@ El usuario de esta plataforma es un viajero o visitante que busca alojamiento te
 
 La interfaz debe incluir las siguientes interacciones:
 
-- Filtro de búsqueda en tiempo real.
+- Filtro de búsqueda en tiempo real (por título y label de categoría).
 - Selección de categoría con estado visual activo.
+- Barra de filtros tipo Airbnb con 3 paneles (Destino, Fechas, Viajeros).
+- Panel de ciudades fijas con selección y cierre automático.
+- Calendario casero con selección de check-in/check-out y resaltado de rango.
+- Controles de viajeros con límites definidos (adultos 1-10, niños 0-10, bebés 0-5, mascotas 0-5).
+- Botón "Buscar" que redirige a `/catalog?q={destino}`.
 - Ordenación de resultados por precio (ascendente / descendente).
 - Estados de carga simulados.
 - Navegación en galería de fotos (anterior / siguiente).
@@ -286,10 +304,73 @@ La captura incluye secciones de experiencias, alojamientos por ciudad o destino,
 
 ```text
 HomePage
-├── SearchHeader
-├── SearchModeSelector
+├── Navbar
+│   ├── Logo
+│   ├── SearchBar
+│   └── UserMenu
+├── SearchFilters (barra tipo Airbnb)
+│   ├── DestinationPanel (11 ciudades fijas)
+│   ├── DatePanel (calendario casero en grilla)
+│   ├── GuestsPanel (adultos, niños, bebés, mascotas)
+│   └── Botón "Buscar" → redirige a /catalog?q=
+├── CategoriesNavigation
+│   └── CategoryItem (×8 categorías con emoji)
 ├── MainContent
-│   ├── ContentSection (experiencias cercanas)
+│   ├── AccommodationGrid
+│   │   └── AccommodationCard (×N alojamientos)
+│   │       ├── AccommodationImage
+│   │       └── AccommodationInfo
+│   │           ├── PricePerNight
+│   │           └── Rating
+│   └── LoadingState (durante carga simulada)
+
+CatalogPage
+├── Navbar (compartido)
+├── ResultsHeader
+│   └── ResultsCounter
+├── SortingControl
+├── MainContent (split: lista + mapa)
+│   ├── AccommodationList
+│   │   └── AccommodationCard (compartido)
+│   └── MapPlaceholder
+
+RoomDetailPage
+├── Navbar (compartido)
+├── BackNavigation
+├── PhotoGallery
+│   └── GalleryNavigation
+├── RoomHeader
+├── RatingAndReviews
+├── LocationInfo
+├── HostInfo
+│   └── HostAvatar
+├── AmenitiesGrid
+│   └── AmenityItem
+├── BookingCard
+│   ├── PricePerNight (compartido)
+│   ├── GuestCounter
+│   └── BookingCTA
+└── LoadingState (durante carga simulada)
+```
+
+### Componentes de referencia visual (no implementados por decisión)
+
+Los siguientes componentes se identificaron en el análisis visual de `airbnb-home.jpg` pero se decidió **no implementarlos**:
+
+- **SearchModeSelector** — Selector Todo/Alojamientos/Experiencias
+- **ExperienceCard** — Tarjetas de experiencias
+- **HotelCard** — Tarjetas de hoteles
+- **ServiceCard** — Servicios cercanos
+- **TravelInspiration** — Bloque de inspiración de viajes
+- **Footer** — Pie de página
+
+### Detalle: Componentes implementados vs. referencias visuales
+
+El proyecto implementa **17 componentes funcionales** (más 4 de la barra de filtros) distribuidos en las tres páginas. La referencia visual de Airbnb contiene componentes adicionales (como carruseles de experiencias, hoteles, servicios, inspiración y footer) que están fuera del alcance aprobado.
+
+```text
+HomePage
+├── SearchHeader
 │   │   └── ExperienceCard
 │   ├── ContentSection (alojamientos por destino)
 │   │   └── AccommodationCard

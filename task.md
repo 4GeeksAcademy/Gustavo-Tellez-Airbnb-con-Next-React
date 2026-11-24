@@ -183,6 +183,33 @@
 
 ---
 
+## FASE 2.5: Search Filters — Barra de búsqueda tipo Airbnb
+
+**Aprobado:** 2026-11-24
+**Basado en:** `airbnb-filtro-1.png` a `airbnb-filtro-4.png`
+
+### 2.7 SearchFilters
+- [X] **T2.7** — `components/home/SearchFilters.tsx` creado
+  - *Verificación:* Barra horizontal con 3 segmentos clickeables (Destino, Fechas, Viajeros) y botón "Buscar". Estado local: `activePanel: "destination" | "dates" | "guests" | null`. Al hacer clic en un segmento se abre su panel y se cierran los otros. Al hacer clic fuera se cierra todo.
+
+### 2.8 DestinationPanel
+- [X] **T2.8** — `components/home/DestinationPanel.tsx` creado
+  - *Verificación:* Acepta `value: string` y `onSelect: (city: string) => void`. Muestra lista de ciudades fijas: "Cualquier destino", "Madrid", "Barcelona", "Sevilla", "Valencia", "Granada", "Málaga", "Bilbao", "París", "Roma", "Lisboa". Al seleccionar una ciudad se cierra el panel y se actualiza el valor.
+
+### 2.9 DatePanel
+- [X] **T2.9** — `components/home/DatePanel.tsx` creado
+  - *Verificación:* Acepta `checkIn: string | null`, `checkOut: string | null` y `onChange: (in: string | null, out: string | null) => void`. Calendario casero en grilla con dos meses. Primer clic selecciona entrada, segundo clic selecciona salida. Rango resaltado visualmente. Inputs `date` nativos como fallback en móvil.
+
+### 2.10 GuestsPanel
+- [X] **T2.10** — `components/home/GuestsPanel.tsx` creado
+  - *Verificación:* Acepta `value: { adults: number; children: number; infants: number; pets: number }` y `onChange: (guests) => void`. Controles +/- para cada categoría. Adultos min 1 / max 10. Niños min 0 / max 10. Bebés min 0 / max 5. Mascotas min 0 / max 5.
+
+### 2.11 Integrar SearchFilters en Home
+- [X] **T2.11** — `app/page.tsx` modificado para incluir SearchFilters
+  - *Verificación:* SearchFilters visible entre Navbar y CategoriesNavigation. Filtro combinado: destino + categoría + búsqueda por texto. Al hacer clic en "Buscar" → redirige a `/catalog?q={destino}`. Sin errores TypeScript.
+
+---
+
 ## FASE 7: Navigation
 
 - [X] **T7.1** — Logo en Navbar navega a `/`
@@ -244,6 +271,7 @@
 |---|---|---|
 | F1 - Data Layer | T1.1 a T1.3 | 3 |
 | F2 - Shared Components | T2.1 a T2.6 | 6 |
+| F2.5 - Search Filters | T2.7 a T2.11 | 5 |
 | F3 - Layout | T3.1 a T3.5 | 5 |
 | F4 - Home | T4.1 a T4.4 | 4 |
 | F5 - Catalog | T5.1 a T5.6 | 6 |
@@ -251,4 +279,4 @@
 | F7 - Navigation | T7.1 a T7.5 | 5 |
 | F8 - Responsive | T8.1 a T8.5 | 5 |
 | F9 - Validation | T9.1 a T9.10 | 10 |
-| **Total** | | **58 tareas verificables** |
+| **Total** | | **63 tareas verificables** |

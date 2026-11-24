@@ -1,7 +1,7 @@
 # SPECIFICATIONS — Airbnb Clone
 
 > **Proyecto:** Gustavo Tellez — Airbnb con Next/React
-> **Fecha:** 2026-11-23
+> **Fecha:** 2026-11-24 (última actualización)
 > **Propósito:** Documento central de especificaciones para el desarrollo del clon visual de Airbnb.
 > **Estado:** Aprobado para implementación.
 
@@ -34,6 +34,8 @@
 - Gestión de huéspedes (GuestCounter) con controles de incremento/decremento.
 - Estados de carga simulados (LoadingState) en Home y Room Detail.
 - Navegación entre páginas usando `Link` de Next.js sin recarga completa.
+- Barra de búsqueda tipo Airbnb (SearchFilters) con 3 segmentos: Destino (ciudades fijas), Fechas (calendario casero), Viajeros (contadores adultos/niños/bebés/mascotas).
+- Botón "Buscar" en SearchFilters que redirige a `/catalog?q={destino}`.
 - Diseño mobile-first (375px → 768px+).
 
 ### Páginas que deben desarrollarse
@@ -52,7 +54,6 @@
 - Integración de mapas funcional (placeholder estático).
 - Pasarela de pago.
 - Modo "Experiencias" u otros modos de exploración funcionales (solo referencia visual).
-- Selector de fechas funcional.
 - Guardado de favoritos (funcionalidad inferida visualmente no requerida).
 
 ### Funcionalidades opcionales (Optional)
@@ -99,57 +100,64 @@
 ### Organización de carpetas
 
 ```
-src/
-├── app/
-│   ├── layout.tsx          # Root layout (Navbar persistente)
-│   ├── page.tsx            # Home (/)
-│   ├── globals.css         # Estilos globales Tailwind
-│   ├── catalog/
-│   │   └── page.tsx        # Catalog (/catalog)
-│   └── rooms/
-│       └── [id]/
-│           └── page.tsx    # Room Detail (/rooms/[id])
-├── components/
-│   ├── layout/             # Componentes de layout compartidos
-│   │   ├── Navbar.tsx
-│   │   ├── Logo.tsx
-│   │   ├── SearchBar.tsx
-│   │   └── UserMenu.tsx
-│   ├── home/               # Componentes específicos de Home
-│   │   ├── CategoriesNavigation.tsx
-│   │   ├── CategoryItem.tsx
-│   │   └── AccommodationGrid.tsx
-│   ├── catalog/            # Componentes específicos de Catalog
-│   │   ├── ResultsHeader.tsx
-│   │   ├── ResultsCounter.tsx
-│   │   ├── SortingControl.tsx
-│   │   ├── AccommodationList.tsx
-│   │   └── MapPlaceholder.tsx
-│   ├── room/               # Componentes específicos de Room Detail
-│   │   ├── BackNavigation.tsx
-│   │   ├── PhotoGallery.tsx
-│   │   ├── GalleryNavigation.tsx
-│   │   ├── RoomHeader.tsx
-│   │   ├── RatingAndReviews.tsx
-│   │   ├── LocationInfo.tsx
-│   │   ├── HostInfo.tsx
-│   │   ├── HostAvatar.tsx
-│   │   ├── AmenitiesGrid.tsx
-│   │   ├── AmenityItem.tsx
-│   │   ├── BookingCard.tsx
-│   │   ├── GuestCounter.tsx
-│   │   └── BookingCTA.tsx
-│   └── shared/             # Componentes compartidos entre páginas
-│       ├── AccommodationCard.tsx
-│       ├── AccommodationImage.tsx
-│       ├── AccommodationInfo.tsx
-│       ├── PricePerNight.tsx
-│       ├── Rating.tsx
-│       └── LoadingState.tsx
-├── data/                   # Datos simulados
-│   └── accommodations.ts
-└── types/                  # Interfaces y tipos TypeScript
-    └── index.ts
+app/
+├── layout.tsx              # Root layout (Navbar persistente + SearchProvider)
+├── page.tsx                # Home (/)
+├── globals.css             # Estilos globales Tailwind
+├── catalog/
+│   └── page.tsx            # Catalog (/catalog)
+└── rooms/
+    └── [id]/
+        └── page.tsx        # Room Detail (/rooms/[id])
+
+components/
+├── layout/                 # Componentes de layout compartidos
+│   ├── Navbar.tsx
+│   ├── Logo.tsx
+│   ├── SearchBar.tsx
+│   └── UserMenu.tsx
+├── home/                   # Componentes específicos de Home
+│   ├── CategoriesNavigation.tsx
+│   ├── CategoryItem.tsx
+│   ├── AccommodationGrid.tsx
+│   ├── SearchFilters.tsx       # Barra de filtros tipo Airbnb (Destino, Fechas, Viajeros)
+│   ├── DestinationPanel.tsx    # Panel de ciudades fijas
+│   ├── DatePanel.tsx           # Calendario casero en grilla
+│   └── GuestsPanel.tsx         # Controles de viajeros (adultos, niños, bebés, mascotas)
+├── catalog/                # Componentes específicos de Catalog
+│   ├── ResultsHeader.tsx
+│   ├── ResultsCounter.tsx
+│   ├── SortingControl.tsx
+│   ├── AccommodationList.tsx
+│   └── MapPlaceholder.tsx
+├── room/                   # Componentes específicos de Room Detail
+│   ├── BackNavigation.tsx
+│   ├── PhotoGallery.tsx
+│   ├── GalleryNavigation.tsx
+│   ├── RoomHeader.tsx
+│   ├── RatingAndReviews.tsx
+│   ├── LocationInfo.tsx
+│   ├── HostInfo.tsx
+│   ├── HostAvatar.tsx
+│   ├── AmenitiesGrid.tsx
+│   ├── AmenityItem.tsx
+│   ├── BookingCard.tsx
+│   ├── GuestCounter.tsx
+│   └── BookingCTA.tsx
+└── shared/                 # Componentes compartidos entre páginas
+    ├── AccommodationCard.tsx
+    ├── AccommodationImage.tsx
+    ├── AccommodationInfo.tsx
+    ├── PricePerNight.tsx
+    ├── Rating.tsx
+    └── LoadingState.tsx
+
+data/                       # Datos simulados
+├── accommodations.ts       # 10 alojamientos mock con imágenes picsum.photos
+└── categories.ts           # 8 categorías con emoji
+
+types/                      # Interfaces y tipos TypeScript
+└── index.ts                # Category, Host, Amenity, Accommodation
 ```
 
 ### Principios de organización
@@ -171,9 +179,10 @@ src/
 
 **Estructura:**
 
-1. **Navbar** (superior): Logo (enlace a `/`), SearchBar, UserMenu (iconos: globo, perfil, menú).
-2. **CategoriesNavigation**: Fila horizontal desplazable de categorías (Playa, Mansiones, Tendencias, etc.). Cada una con icono y etiqueta. Scroll horizontal en móvil.
-3. **MainContent — AccommodationGrid**: Cuadrícula responsive de tarjetas de alojamiento.
+1. **Navbar** (superior): Logo (enlace a `/`), SearchBar, UserMenu (iconos: 🌐 👤 ☰).
+2. **SearchFilters**: Barra horizontal segmentada con 3 paneles desplegables (Destino, Fechas, Viajeros) y botón "Buscar". Redirige a `/catalog?q={destino}`.
+3. **CategoriesNavigation**: Fila horizontal desplazable de categorías (Playa, Mansiones, Tendencias, etc.). Cada una con icono y etiqueta. Scroll horizontal en móvil.
+4. **MainContent — AccommodationGrid**: Cuadrícula responsive de tarjetas de alojamiento.
    - Móvil: 1 columna.
    - Escritorio (≥768px): Múltiples columnas.
 4. **LoadingState**: Se muestra mientras simula carga de datos.
@@ -215,9 +224,9 @@ src/
 
 **Funcionalidades:**
 
-- Muestra resultados según búsqueda/filtro desde Home.
+- Muestra resultados según búsqueda por texto (desde SearchBar) o query param `?q=` en la URL.
+- Búsqueda por label de categoría: buscar "playa" también encuentra alojamientos de categoría "Playa 🏖️".
 - Ordenación por precio ascendente/descendente.
-- Los datos se reciben mediante props o estado compartido (search query, category filter).
 - Click en tarjeta navega a `/rooms/[id]`.
 - MapPlaceholder muestra un visual estático.
 
@@ -295,7 +304,11 @@ src/
 | **Descripción** | Fila horizontal de categorías seleccionables |
 | **Comportamiento** | Click en CategoryItem: selecciona/deselecciona. Solo una categoría activa a la vez. Al seleccionar, filtra los alojamientos. Al deseleccionar, muestra todos |
 | **Estado** | `selectedCategory: string \| null` |
-| **Resultado** | Grid filtrado por categoría seleccionada. Al navegar a Catalog, la categoría y búsqueda se mantienen (idealmente mediante params de URL o estado) |
+| **Resultado** | Grid filtrado por categoría seleccionada. Home y Catalog son independientes (cada uno filtra su propio grid) |
+
+### 6.2.1 Búsqueda por label de categoría
+
+Además del filtro por título, el campo de búsqueda también busca coincidencias en el **label de la categoría** a la que pertenece cada alojamiento. Por ejemplo, buscar "playa" encuentra alojamientos de la categoría "Playa 🏖️" aunque el título no contenga la palabra "playa". Esto aplica tanto en Home como en Catalog.
 
 ### 6.3 Ordenación (SortingControl)
 
@@ -343,9 +356,9 @@ src/
 |---|---|
 | **Páginas** | Room Detail (BookingCard) |
 | **Descripción** | Control para seleccionar número de huéspedes |
-| **Comportamiento** | Botón "+": incrementa. Botón "-": decrementa. Mínimo: 1. Máximo: no especificado (pendiente de definir) |
+| **Comportamiento** | Botón "+": incrementa. Botón "-": decrementa. Mínimo: 1. Máximo: 10 |
 | **Estado** | `guestCount: number` |
-| **Resultado** | Número actualizado visible. Botón "-" deshabilitado en mínimo |
+| **Resultado** | Número actualizado visible. Botón "-" deshabilitado en mínimo. Botón "+" deshabilitado en máximo |
 
 ### 6.8 Reserva (BookingCTA)
 
@@ -356,6 +369,40 @@ src/
 | **Comportamiento** | Click: muestra alerta o mensaje simulando inicio de reserva |
 | **Estado** | Ninguno |
 | **Resultado** | Mensaje de confirmación simulado |
+
+### 6.9 Barra de Filtros (SearchFilters)
+
+| Atributo | Descripción |
+|---|---|
+| **Páginas** | Home |
+| **Descripción** | Barra horizontal segmentada con 3 paneles desplegables: Destino, Fechas, Viajeros, más botón "Buscar" |
+| **Comportamiento** | Click en segmento abre panel y cierra otros. Click fuera cierra todo. "Buscar" redirige a `/catalog?q={destino}` |
+| **Estado** | `activePanel: 'destination' \| 'dates' \| 'guests' \| null`, `destination: string`, `checkIn: string \| null`, `checkOut: string \| null`, `guests: { adults, children, infants, pets }` |
+| **Resultado** | Filtro combinado con categorías y búsqueda por texto en Home. Redirección a Catalog con query params |
+
+#### DestinationPanel
+
+| Atributo | Descripción |
+|---|---|
+| **Ciudades** | "Cualquier destino", "Madrid", "Barcelona", "Sevilla", "Valencia", "Granada", "Málaga", "Bilbao", "París", "Roma", "Lisboa" |
+| **Comportamiento** | Click selecciona ciudad y cierra panel. Se muestra en el segmento "Destino" |
+| **Props** | `value: string`, `onSelect: (city: string) => void` |
+
+#### DatePanel
+
+| Atributo | Descripción |
+|---|---|
+| **Descripción** | Calendario casero en grilla con vista de dos meses consecutivos |
+| **Comportamiento** | Primer click → selecciona check in. Segundo click → selecciona check out. El rango entre ambos se resalta visualmente. Inputs `date` nativos como fallback en móvil |
+| **Props** | `checkIn: string \| null`, `checkOut: string \| null`, `onChange: (in, out) => void` |
+
+#### GuestsPanel
+
+| Atributo | Descripción |
+|---|---|
+| **Categorías** | Adultos (min 1, max 10), Niños (min 0, max 10), Bebés (min 0, max 5), Mascotas (min 0, max 5) |
+| **Comportamiento** | Controles +/- independientes. Botón "-" se deshabilita en el mínimo. Botón "+" se deshabilita en el máximo |
+| **Props** | `value: GuestCounts`, `onChange: (guests) => void` |
 
 ---
 
@@ -403,13 +450,11 @@ src/
 
 ### Colores
 
-- **Fondo:** `#ffffff` (blanco), `#f5f5f5` (gris claro para footer).
-- **Texto principal:** ~`#171717` (casi negro).
-- **Texto secundario:** ~`#6b7280` o `#71717a` (gris).
-- **Acento (pendiente de definir):** En referencia desktop se observa rosa para botón de búsqueda.
-- **Bordes:** Gris claro sutil.
-
-> **Pending confirmation:** Paleta de colores exacta no está completamente definida. Los valores mencionados son inferencias de las referencias visuales y configuraciones actuales.
+- **Fondo:** `#ffffff` (blanco), `bg-gray-50` para fondos secundarios.
+- **Texto principal:** `text-gray-900` (~#171717 / casi negro).
+- **Texto secundario:** `text-gray-500` (~#6b7280 / gris).
+- **Acento:** `rose-500` (Tailwind) para botones y elementos destacados.
+- **Bordes:** `border-gray-200` (gris claro sutil).
 
 ### Tipografía
 
@@ -418,8 +463,8 @@ src/
 
 ### Iconografía
 
-- No hay librería de iconos definida. Se usará SVG inline o emojis simples.
-- **Pending confirmation:** Fuente de iconos (SVG inline, SVG sprite, o emoji).
+- **Emojis** para toda la iconografía (categorías, amenities, etc.).
+- Sin librería de iconos externa.
 
 ### Grid
 
@@ -468,10 +513,8 @@ src/
 |---|---|
 | **Uso** | AccommodationCard, BookingCard |
 | **Responsabilidad** | Mostrar precio formateado |
-| **Props** | `price: number`, `currency?: string` (default: USD o EUR) |
-| **Formato** | Ej: "$120 / noche" |
-
-> **Pending confirmation:** Símbolo de moneda (USD vs EUR).
+| **Props** | `price: number`, `currency?: string` (default: EUR) |
+| **Formato** | Ej: "120€ / noche" |
 
 #### Rating
 
@@ -541,6 +584,43 @@ src/
 | **Responsabilidad** | Contenedor grid de tarjetas |
 | **Props** | `accommodations: Accommodation[]` |
 | **Estructura** | `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` |
+
+#### SearchFilters
+
+| Atributo | Descripción |
+|---|---|
+| **Uso** | Home |
+| **Responsabilidad** | Barra de filtros tipo Airbnb (Destino, Fechas, Viajeros) |
+| **Contenido** | DestinationPanel, DatePanel, GuestsPanel |
+| **Comportamiento** | Filtra alojamientos según selección |
+| **Props** | `onSearch: (filters: Filters) => void` |
+
+#### DestinationPanel
+
+| Atributo | Descripción |
+|---|---|
+| **Uso** | Home |
+| **Responsabilidad** | Panel de selección de ciudad |
+| **Props** | `destinations: string[]`, `onSelect: (destination: string) => void` |
+| **Comportamiento** | Click en ciudad la selecciona; puede haber búsqueda dentro del panel |
+
+#### DatePanel
+
+| Atributo | Descripción |
+|---|---|
+| **Uso** | Home |
+| **Responsabilidad** | Selector de fechas (check-in, check-out) |
+| **Props** | `onDatesChange: (startDate: Date, endDate: Date) => void` |
+| **Comportamiento** | Abre calendario al hacer click; permite seleccionar rango de fechas |
+
+#### GuestsPanel
+
+| Atributo | Descripción |
+|---|---|
+| **Uso** | Home |
+| **Responsabilidad** | Controles de número de viajeros (adultos, niños, bebés, mascotas) |
+| **Props** | `guestCounts: GuestCountConfig`, `onChange: (counts: GuestCountConfig) => void` |
+| **Comportamiento** | Botones +/- para cada tipo de viajero; mínimo 1 adulto |
 
 ### 8.3 Componentes de Catalog
 
@@ -737,7 +817,7 @@ src/
 | Campo | Tipo | Descripción |
 |---|---|---|
 | `min` | `number` | Mínimo de huéspedes (1) |
-| `max` | `number` | Máximo de huéspedes (pendiente de definir) |
+| `max` | `number` | Máximo de huéspedes (10) |
 
 ### Relaciones entre entidades
 
@@ -753,11 +833,15 @@ src/
 - **Catalog:** Lista de `Accommodation[]` (filtrada y ordenada).
 - **Room Detail:** Un `Accommodation` completo (con host, amenities, images[]).
 
-### Campos pendientes de definir
+### Decisiones tomadas (actualizaciones post-aprobación)
 
-- `icon` en Category y Amenity: qué formato usar (SVG inline path, emoji, string ID).
-- `max` en GuestConfig: número máximo de huéspedes.
-- Moneda para precios (USD / EUR / otra).
+- `icon` en Category y Amenity: **emoji**.
+- `max` en GuestConfig: **10** huéspedes.
+- Moneda: **EUR** con formato "120€ / noche".
+- Imágenes: **picsum.photos** (configurado en `next.config.ts` como `remotePatterns`).
+- Estructura de carpetas: **raíz** (sin `src/`).
+- Home y Catalog: **independientes** (sin search params entre ellos, cada uno filtra su propio grid).
+- Iconos de UserMenu: **decorativos** (sin funcionalidad).
 
 ---
 
@@ -776,9 +860,9 @@ src/
 
 ### Flujo de estado
 
-- **En Home:** `searchQuery` y `selectedCategory` definen qué alojamientos se muestran.
-- **Al navegar a Catalog:** Sería ideal pasar `searchQuery` y `selectedCategory` como search params en la URL (`/catalog?q=...&category=...`) para mantener el filtro.
-- **En Catalog:** `sortOrder` modifica el orden de la misma lista filtrada.
+- **En Home:** `searchQuery` (compartido via SearchContext) + `selectedCategory` (local) + `destination`/`checkIn`/`checkOut`/`guests` (local en SearchFilters) definen qué alojamientos se muestran.
+- **Al navegar a Catalog:** Se usa `useSearchParams` para leer `?q=` desde la URL. Catalog es independiente de Home (cada uno filtra su propio grid). Además, busca coincidencias por label de categoría para mejorar resultados. El SearchContext mantiene el query compartido entre páginas.
+- **En Catalog:** `sortOrder` modifica el orden de la misma lista filtrada. El `searchQuery` se sincroniza con `?q=` de la URL.
 - **En Room Detail:** `currentImageIndex` y `guestCount` son estados locales independientes.
 
 ### Hooks
@@ -786,9 +870,12 @@ src/
 - `useState` para todos los estados anteriores.
 - `useEffect` para simular carga (setTimeout con cambio de estado).
 - `useParams` de Next.js para obtener `[id]` en Room Detail.
-- `useRouter` o `useSearchParams` para pasar filtros entre Home y Catalog (según enfoque elegido).
+- `useSearchParams` para leer `?q=` en Catalog.
+- `useRouter` para navegación programática.
 
-> **No se requiere Redux, Context API ni librerías de estado externas.** El estado es puramente local y de URL.
+### SearchContext
+
+Se utiliza un `SearchContext` (Provider + hook `useSearch`) para compartir el `searchQuery` entre todas las páginas. El Navbar accede a `searchQuery` y `setSearchQuery` mediante este contexto, permitiendo que la SearchBar esté siempre sincronizada sin necesidad de pasar props manualmente.
 
 ---
 
@@ -804,17 +891,13 @@ Home (/)  ←──→  Catalog (/catalog)  ←──→  Room Detail (/rooms/[i
 
 ### Reglas de navegación
 
-1. **Home → Catalog:** Ocurre cuando el usuario escribe en SearchBar, selecciona una categoría, o se implementa un mecanismo de "ver todos los resultados". (Detalle pendiente: ¿hay un trigger de navegación o solo se filtran resultados en Home? Según el challenge, Home filtra y Catalog es una vista separada. Pendiente de definir cómo se transiciona de Home a Catalog.)
+1. **Home → Catalog:** Ocurre cuando el usuario hace clic en "Buscar" desde el SearchFilters (barra de filtros tipo Airbnb). Redirige a `/catalog?q={destino}&checkIn={...}&checkOut={...}&adults={...}&children={...}`. También se puede acceder directamente a `/catalog` como URL independiente.
 2. **Catalog → Room Detail:** Click en AccommodationCard → navegación a `/rooms/${id}`.
 3. **Room Detail → Catalog/Home:** Botón BackNavigation (historial anterior) o Logo (Home).
 4. **Logo:** Siempre navega a `/`.
 5. **Todas las navegaciones internas** usan `<Link>` de Next.js — no `<a href>`.
 6. **Sin recarga completa:** App Router maneja las transiciones.
-
-### Pending
-
-- ¿Cómo se pasa el contexto de búsqueda/filtro de Home a Catalog? Opciones: search params en URL (`/catalog?search=playa`), o estado global simple.
-- ¿Existe un botón explícito de "Ver todos" o es suficiente con que Catalog se acceda por una URL directa?
+7. **SearchContext:** El `searchQuery` se comparte mediante SearchContext, no mediante URL, permitiendo que Home y Catalog tengan búsquedas independientes.
 
 ---
 
@@ -831,6 +914,7 @@ Home (/)  ←──→  Catalog (/catalog)  ←──→  Room Detail (/rooms/[i
 | Elemento | Móvil (<768px) | Escritorio (≥768px) |
 |---|---|---|
 | **Navbar** | Layout compacto. Logo puede ocultarse o ser pequeño. SearchBar puede ser compacta | Two-level: logo + modos + user menu arriba; búsqueda segmentada debajo |
+| **SearchFilters** | Barra compacta de ancho completo, paneles en modo modal/pantalla completa | Segmentos con más espacio, paneles desplegables posicionados |
 | **Categories** | Scroll horizontal, íconos pequeños | Más espacio entre items |
 | **Home Grid** | `grid-cols-1` | `grid-cols-2`, `lg:grid-cols-3` o `4` |
 | **Catalog layout** | Lista vertical, MapPlaceholder debajo | Split: lista izquierda (60-70%), mapa derecha (30-40%) |
@@ -897,9 +981,14 @@ Home (/)  ←──→  Catalog (/catalog)  ←──→  Room Detail (/rooms/[i
 ### Functional Requirements
 
 - [ ] Navbar con Logo, SearchBar y UserMenu visible en las tres páginas.
-- [ ] Búsqueda en tiempo real filtra alojamientos en Home.
+- [ ] Búsqueda en tiempo real filtra alojamientos en Home (por título y label de categoría).
 - [ ] Categorías navegables con selección visual activa.
 - [ ] Catalog muestra resultados con contador y ordenación por precio.
+- [ ] SearchFilters visible en Home con segmentos Destino, Fechas, Viajeros y botón Buscar.
+- [ ] DestinationPanel muestra 11 ciudades fijas y al seleccionar se actualiza el segmento.
+- [ ] DatePanel con calendario en grilla, selección de check-in/check-out y resaltado de rango.
+- [ ] GuestsPanel con controles +/- para adultos, niños, bebés y mascotas con límites definidos.
+- [ ] Botón "Buscar" redirige a `/catalog?q={destino}`.
 - [ ] Room Detail carga datos por ID de URL.
 - [ ] Galería de fotos navegable (anterior/siguiente).
 - [ ] GuestCounter funcional (incremento/decremento, mínimo 1).
@@ -933,24 +1022,29 @@ Home (/)  ←──→  Catalog (/catalog)  ←──→  Room Detail (/rooms/[i
 
 ---
 
-## 16. Pending Decisions and Open Questions
+## 16. Decisiones Tomadas (historial de aprobaciones)
 
-| # | Asunto | Estado | Observaciones |
+| # | Asunto | Decisión | Fecha |
 |---|---|---|---|
-| 1 | **Datos definitivos de alojamientos** | Pending | ¿Cuántos alojamientos? ¿Qué campos exactos? Usar datos mock |
-| 2 | **Imágenes** | Pending | ¿Imágenes de placeholder (unsplash, picsum)? ¿SVG? |
-| 3 | **Iconos** | Pending | Sin librería definida. ¿SVG inline? ¿Emoji? ¿Lucide? |
-| 4 | **Moneda** | Pending | ¿USD? ¿EUR? ¿Símbolo ($ o €)? |
-| 5 | **Máximo de huéspedes** | Pending | No definido. ¿10? ¿Sin límite? |
-| 6 | **Transición Home → Catalog** | Pending | ¿Hay navegación explícita o solo filtro en Home? ¿Se usa URL search params? |
-| 7 | **Mapa real vs placeholder** | Pending | Challenge dice placeholder estático. Confirmar |
-| 8 | **Colores exactos** | Pending | Solo inferidos de imágenes. Definir paleta |
-| 9 | **BookingCard en desktop** | Pending | ¿Sticky sidebar o flujo normal? |
-| 10 | **Footer** | Pending | ¿Se implementa? ¿Compartido? Challenge no lo menciona explícitamente |
-| 11 | **UserMenu interacciones** | Pending | ¿Menú desplegable o solo iconos decorativos? |
-| 12 | **SearchModeSelector** | Pending | ¿Se implementa el selector Todo/Alojamientos/Experiencias? Funcionalidad opcional |
-| 13 | **Heart/favorito en tarjetas** | Pending | Inferido visualmente. ¿Se implementa? Opcional |
-| 14 | **Secciones adicionales en Home** | Pending | ¿Solo grid de alojamientos o también secciones de experiencias, hoteles, etc.? Opcional |
+| 1 | **📁 Estructura** | Raíz (sin `src/`): `app/`, `components/`, `types/`, `data/` | 2026-11-23 |
+| 2 | **📸 Imágenes** | `https://picsum.photos/...` con `remotePatterns` en next.config.ts | 2026-11-23 |
+| 3 | **🔤 Iconos** | **Emoji** para categorías y amenities | 2026-11-23 |
+| 4 | **💰 Moneda** | **EUR**, formato `"120€ / noche"` | 2026-11-23 |
+| 5 | **🔝 Máx. huéspedes** | **10** | 2026-11-23 |
+| 6 | **🏠 Home → Catalog** | **Independientes.** Home filtra su propio grid. Catalog es URL directa | 2026-11-23 |
+| 7 | **🗺️ Mapa** | Placeholder estático (sin mapa real) | 2026-11-23 |
+| 8 | **🎨 Colores** | `bg-white`, `text-gray-900`, `text-gray-500`, `border-gray-200`, acento `rose-500` | 2026-11-23 |
+| 9 | **📦 BookingCard** | Flujo normal (no sticky sidebar) | 2026-11-23 |
+| 10 | **🦶 Footer** | ❌ No implementar | 2026-11-23 |
+| 11 | **👤 UserMenu** | Solo iconos decorativos (sin funcionalidad) | 2026-11-23 |
+| 12 | **🔍 SearchModeSelector** | ❌ No implementar | 2026-11-23 |
+| 13 | **❤️ Heart/favorito** | ❌ No implementar | 2026-11-23 |
+| 14 | **➕ Secciones extra Home** | ❌ No implementar | 2026-11-23 |
+| **NUEVAS DECISIONES (2026-11-24)** ||||
+| 15 | **🏙️ Destino (SearchFilters)** | Ciudades **fijas** (lista predefinida: Madrid, Barcelona, etc.) | 2026-11-24 |
+| 16 | **📅 Fechas (SearchFilters)** | Calendario casero en grilla (sin librería externa). Inputs `date` nativos como fallback móvil | 2026-11-24 |
+| 17 | **👥 Viajeros (SearchFilters)** | Adultos min 1 / max 10. Niños min 0 / max 10. Bebés min 0 / max 5. Mascotas min 0 / max 5 | 2026-11-24 |
+| 18 | **🔍 Botón Buscar** | Redirige a `/catalog?q={destino}` con parámetros adicionales | 2026-11-24 |
 
 ---
 
@@ -968,6 +1062,14 @@ Home (/)  ←──→  Catalog (/catalog)  ←──→  Room Detail (/rooms/[i
 - [ ] Definir tipos e interfaces (Accommodation, Category, Host, Amenity, etc.)
 - [ ] Crear datos simulados (accommodations, categories)
 
+### Fase 2.5: Search Filters
+
+- [ ] SearchFilters (barra horizontal con 3 segmentos + botón Buscar)
+- [ ] DestinationPanel (lista de 11 ciudades fijas)
+- [ ] DatePanel (calendario casero en grilla con dos meses)
+- [ ] GuestsPanel (controles adultos/niños/bebés/mascotas)
+- [ ] Integración en app/page.tsx (filtro combinado)
+
 ### Fase 3: Shared Components
 
 - [ ] Navbar (Logo + SearchBar + UserMenu)
@@ -981,6 +1083,7 @@ Home (/)  ←──→  Catalog (/catalog)  ←──→  Room Detail (/rooms/[i
 - [ ] Estados de carga simulada
 - [ ] Filtrado por búsqueda
 - [ ] Filtrado por categoría
+- [ ] SearchFilters (DestinationPanel + DatePanel + GuestsPanel)
 
 ### Fase 5: Catalog Page
 

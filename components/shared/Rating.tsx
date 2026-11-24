@@ -3,7 +3,7 @@ interface RatingProps {
   reviewCount?: number;
 }
 
-export default function Rating({ rating, reviewCount }: RatingProps) {
+const Rating = ({ rating, reviewCount }: RatingProps) => {
   return (
     <span className="flex items-center gap-1 text-sm text-gray-700">
       <span className="text-rose-500">★</span>
@@ -14,3 +14,5 @@ export default function Rating({ rating, reviewCount }: RatingProps) {
     </span>
   );
 }
+
+export default Rating;

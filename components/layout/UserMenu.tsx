@@ -1,4 +1,4 @@
-export default function UserMenu() {
+const UserMenu = () => {
   return (
     <div className="flex items-center gap-2 text-gray-500">
       <button className="rounded-full p-2 transition hover:bg-gray-100" aria-label="Idioma">
@@ -13,3 +13,5 @@ export default function UserMenu() {
     </div>
   );
 }
+
+export default UserMenu;

@@ -5,7 +5,7 @@ interface RoomDetailsProps {
   bathrooms: number;
 }
 
-export default function RoomDetails({ guests, bedrooms, beds, bathrooms }: RoomDetailsProps) {
+const RoomDetails = ({ guests, bedrooms, beds, bathrooms }: RoomDetailsProps) => {
   return (
     <div className="border-b border-gray-200 pb-4">
       <h2 className="mb-2 text-lg font-semibold text-gray-900">Detalles</h2>
@@ -18,3 +18,5 @@ export default function RoomDetails({ guests, bedrooms, beds, bathrooms }: RoomD
     </div>
   );
 }
+
+export default RoomDetails;

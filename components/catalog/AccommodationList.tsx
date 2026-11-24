@@ -5,7 +5,7 @@ interface AccommodationListProps {
   accommodations: Accommodation[];
 }
 
-export default function AccommodationList({ accommodations }: AccommodationListProps) {
+const AccommodationList = ({ accommodations }: AccommodationListProps) => {
   return (
     <div className="space-y-4">
       {accommodations.map((acc) => (
@@ -26,3 +26,5 @@ export default function AccommodationList({ accommodations }: AccommodationListP
     </div>
   );
 }
+
+export default AccommodationList;

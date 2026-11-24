@@ -4,7 +4,7 @@ interface RoomHostProps {
   host: Host;
 }
 
-export default function RoomHost({ host }: RoomHostProps) {
+const RoomHost = ({ host }: RoomHostProps) => {
   return (
     <div className="flex items-center gap-3 border-b border-gray-200 pb-4">
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-lg font-bold text-rose-600">
@@ -17,3 +17,5 @@ export default function RoomHost({ host }: RoomHostProps) {
     </div>
   );
 }
+
+export default RoomHost;

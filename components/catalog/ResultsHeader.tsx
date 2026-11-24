@@ -3,7 +3,7 @@ interface ResultsHeaderProps {
   query?: string;
 }
 
-export default function ResultsHeader({ total, query }: ResultsHeaderProps) {
+const ResultsHeader = ({ total, query }: ResultsHeaderProps) => {
   return (
     <div className="mb-4">
       <h1 className="text-xl font-semibold text-gray-900">
@@ -13,3 +13,5 @@ export default function ResultsHeader({ total, query }: ResultsHeaderProps) {
     </div>
   );
 }
+
+export default ResultsHeader;

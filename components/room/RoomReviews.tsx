@@ -3,7 +3,7 @@ interface RoomReviewsProps {
   reviewCount: number;
 }
 
-export default function RoomReviews({ rating, reviewCount }: RoomReviewsProps) {
+const RoomReviews = ({ rating, reviewCount }: RoomReviewsProps) => {
   return (
     <div className="border-b border-gray-200 pb-4">
       <h2 className="mb-3 text-lg font-semibold text-gray-900">
@@ -15,3 +15,5 @@ export default function RoomReviews({ rating, reviewCount }: RoomReviewsProps) {
     </div>
   );
 }
+
+export default RoomReviews;

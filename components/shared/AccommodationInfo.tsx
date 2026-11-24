@@ -8,12 +8,12 @@ interface AccommodationInfoProps {
   reviewCount?: number;
 }
 
-export default function AccommodationInfo({
+const AccommodationInfo = ({
   title,
   price,
   rating,
   reviewCount,
-}: AccommodationInfoProps) {
+}: AccommodationInfoProps) => {
   return (
     <div className="mt-2 space-y-1">
       <h3 className="font-medium text-gray-900 truncate">{title}</h3>
@@ -22,3 +22,5 @@ export default function AccommodationInfo({
     </div>
   );
 }
+
+export default AccommodationInfo;

@@ -19,10 +19,10 @@ const cities = [
   "Lisboa",
 ];
 
-export default function DestinationPanel({
+const DestinationPanel = ({
   value,
   onSelect,
-}: DestinationPanelProps) {
+}: DestinationPanelProps) => {
   return (
     <div className="absolute left-0 top-full z-40 mt-2 w-72 rounded-2xl border border-gray-200 bg-white p-4 shadow-lg">
       <p className="mb-3 text-sm font-semibold text-gray-900">Destino</p>
@@ -47,3 +47,5 @@ export default function DestinationPanel({
     </div>
   );
 }
+
+export default DestinationPanel;

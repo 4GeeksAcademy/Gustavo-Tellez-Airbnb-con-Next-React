@@ -15,7 +15,7 @@ for (const cat of categories) {
   categoryLabelMap[cat.id] = cat.label.toLowerCase();
 }
 
-export default function Home() {
+const Home = () => {
   const { searchQuery } = useSearch();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -75,3 +75,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home;

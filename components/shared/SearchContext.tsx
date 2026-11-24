@@ -9,7 +9,7 @@ interface SearchContextValue {
 
 const SearchContext = createContext<SearchContextValue | null>(null);
 
-export function SearchProvider({ children }: { children: ReactNode }) {
+export const SearchProvider = ({ children }: { children: ReactNode }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -19,7 +19,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useSearch() {
+export const useSearch = () => {
   const context = useContext(SearchContext);
 
   if (!context) {

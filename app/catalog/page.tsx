@@ -2,9 +2,9 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { accommodations } from "@/data/accommodations";
 import { categories } from "@/data/categories";
-import { Suspense } from "react";
 import LoadingState from "@/components/shared/LoadingState";
 import ResultsHeader from "@/components/catalog/ResultsHeader";
 import ResultsCounter from "@/components/catalog/ResultsCounter";
@@ -14,11 +14,9 @@ import MapPlaceholder from "@/components/catalog/MapPlaceholder";
 import { useSearch } from "@/components/shared/SearchContext";
 
 const categoryLabelMap: Record<string, string> = {};
-for (const cat of categories) {
-  categoryLabelMap[cat.id] = cat.label.toLowerCase();
-}
+for (const cat of categories) categoryLabelMap[cat.id] = cat.label.toLowerCase();
 
-function CatalogContent() {
+const CatalogContent = () => {
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q") || "";
   const { searchQuery } = useSearch();
@@ -34,67 +32,41 @@ function CatalogContent() {
 
   const filteredAndSorted = useMemo(() => {
     let result = [...accommodations];
-
-    // Filter by query
     if (activeQuery.trim()) {
       const q = activeQuery.trim().toLowerCase();
       result = result.filter(
-        (a) =>
-          a.title.toLowerCase().includes(q) ||
-          a.location.toLowerCase().includes(q) ||
-          (categoryLabelMap[a.categoryId] || "").includes(q),
+        (a) => a.title.toLowerCase().includes(q) || a.location.toLowerCase().includes(q) || (categoryLabelMap[a.categoryId] || "").includes(q)
       );
     }
-
-    // Sort
     switch (sortOrder) {
-      case "price-asc":
-        result.sort((a, b) => a.pricePerNight - b.pricePerNight);
-        break;
-      case "price-desc":
-        result.sort((a, b) => b.pricePerNight - a.pricePerNight);
-        break;
-      case "rating":
-        result.sort((a, b) => b.rating - a.rating);
-        break;
+      case "price-asc": result.sort((a, b) => a.pricePerNight - b.pricePerNight); break;
+      case "price-desc": result.sort((a, b) => b.pricePerNight - a.pricePerNight); break;
+      case "rating": result.sort((a, b) => b.rating - a.rating); break;
     }
-
     return result;
   }, [activeQuery, sortOrder]);
 
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-8">
-        <LoadingState count={4} />
-      </div>
-    );
-  }
+  if (isLoading) return <div className="mx-auto max-w-7xl px-4 py-8"><LoadingState count={4} /></div>;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <ResultsHeader total={filteredAndSorted.length} query={activeQuery || undefined} />
-
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <ResultsCounter current={filteredAndSorted.length} total={accommodations.length} />
         <SortingControl sortOrder={sortOrder} onChange={setSortOrder} />
       </div>
-
       <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="flex-1">
-          <AccommodationList accommodations={filteredAndSorted} />
-        </div>
-        <div className="lg:w-96 shrink-0">
-          <MapPlaceholder />
-        </div>
+        <div className="flex-1"><AccommodationList accommodations={filteredAndSorted} /></div>
+        <div className="lg:w-96 shrink-0"><MapPlaceholder /></div>
       </div>
     </div>
   );
 }
 
-export default function CatalogPage() {
-  return (
-    <Suspense fallback={<LoadingState count={4} />}>
-      <CatalogContent />
-    </Suspense>
-  );
-}
+const CatalogPage = () => (
+  <Suspense fallback={<LoadingState count={4} />}>
+    <CatalogContent />
+  </Suspense>
+);
+
+export default CatalogPage;

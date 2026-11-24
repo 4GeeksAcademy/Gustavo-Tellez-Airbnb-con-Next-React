@@ -7,7 +7,7 @@ interface NavbarProps {
   onSearchChange: (value: string) => void;
 }
 
-export default function Navbar({ searchQuery, onSearchChange }: NavbarProps) {
+const Navbar = ({ searchQuery, onSearchChange }: NavbarProps) => {
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
@@ -27,3 +27,5 @@ export default function Navbar({ searchQuery, onSearchChange }: NavbarProps) {
     </header>
   );
 }
+
+export default Navbar;

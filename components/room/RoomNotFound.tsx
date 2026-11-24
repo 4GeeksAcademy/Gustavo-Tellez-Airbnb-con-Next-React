@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function RoomNotFound() {
+const RoomNotFound = () => {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-gray-500">
       <span className="text-5xl">🏡</span>
@@ -17,3 +17,5 @@ export default function RoomNotFound() {
     </div>
   );
 }
+
+export default RoomNotFound;

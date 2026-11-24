@@ -1,4 +1,4 @@
-export default function MapPlaceholder() {
+const MapPlaceholder = () => {
   return (
     <div className="flex h-full min-h-[300px] items-center justify-center rounded-xl bg-gray-100 lg:min-h-[500px]">
       <div className="text-center text-gray-400">
@@ -9,3 +9,5 @@ export default function MapPlaceholder() {
     </div>
   );
 }
+
+export default MapPlaceholder;

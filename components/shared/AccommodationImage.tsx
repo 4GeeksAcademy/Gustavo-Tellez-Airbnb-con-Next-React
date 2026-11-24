@@ -5,7 +5,7 @@ interface AccommodationImageProps {
   alt: string;
 }
 
-export default function AccommodationImage({ src, alt }: AccommodationImageProps) {
+const AccommodationImage = ({ src, alt }: AccommodationImageProps) => {
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
       <Image
@@ -18,3 +18,5 @@ export default function AccommodationImage({ src, alt }: AccommodationImageProps
     </div>
   );
 }
+
+export default AccommodationImage;

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export default function BackNavigation() {
+const BackNavigation = () => {
   const router = useRouter();
 
   return (
@@ -15,3 +15,5 @@ export default function BackNavigation() {
     </button>
   );
 }
+
+export default BackNavigation;

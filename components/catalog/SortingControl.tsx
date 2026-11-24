@@ -3,7 +3,7 @@ interface SortingControlProps {
   onChange: (order: "none" | "price-asc" | "price-desc" | "rating") => void;
 }
 
-export default function SortingControl({ sortOrder, onChange }: SortingControlProps) {
+const SortingControl = ({ sortOrder, onChange }: SortingControlProps) => {
   return (
     <div className="flex items-center gap-2">
       <label htmlFor="sort" className="text-sm text-gray-500">
@@ -31,3 +31,5 @@ export default function SortingControl({ sortOrder, onChange }: SortingControlPr
     </div>
   );
 }
+
+export default SortingControl;

@@ -4,7 +4,7 @@ interface RoomAmenitiesProps {
   amenities: Amenity[];
 }
 
-export default function RoomAmenities({ amenities }: RoomAmenitiesProps) {
+const RoomAmenities = ({ amenities }: RoomAmenitiesProps) => {
   return (
     <div className="border-b border-gray-200 pb-4">
       <h2 className="mb-3 text-lg font-semibold text-gray-900">Servicios</h2>
@@ -19,3 +19,5 @@ export default function RoomAmenities({ amenities }: RoomAmenitiesProps) {
     </div>
   );
 }
+
+export default RoomAmenities;

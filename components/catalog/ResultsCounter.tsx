@@ -3,10 +3,12 @@ interface ResultsCounterProps {
   total: number;
 }
 
-export default function ResultsCounter({ current, total }: ResultsCounterProps) {
+const ResultsCounter = ({ current, total }: ResultsCounterProps) => {
   return (
     <p className="text-xs text-gray-400">
       Mostrando {current} de {total} resultados
     </p>
   );
 }
+
+export default ResultsCounter;

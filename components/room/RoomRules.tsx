@@ -2,7 +2,7 @@ interface RoomRulesProps {
   rules: string[];
 }
 
-export default function RoomRules({ rules }: RoomRulesProps) {
+const RoomRules = ({ rules }: RoomRulesProps) => {
   return (
     <div className="border-b border-gray-200 pb-4">
       <h2 className="mb-2 text-lg font-semibold text-gray-900">Normas</h2>
@@ -17,3 +17,5 @@ export default function RoomRules({ rules }: RoomRulesProps) {
     </div>
   );
 }
+
+export default RoomRules;

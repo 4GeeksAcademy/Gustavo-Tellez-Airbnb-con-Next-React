@@ -2,7 +2,7 @@ interface RoomDescriptionProps {
   description: string;
 }
 
-export default function RoomDescription({ description }: RoomDescriptionProps) {
+const RoomDescription = ({ description }: RoomDescriptionProps) => {
   return (
     <div className="border-b border-gray-200 pb-4">
       <h2 className="mb-2 text-lg font-semibold text-gray-900">Descripción</h2>
@@ -10,3 +10,5 @@ export default function RoomDescription({ description }: RoomDescriptionProps) {
     </div>
   );
 }
+
+export default RoomDescription;

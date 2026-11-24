@@ -9,11 +9,11 @@ interface CategoriesNavigationProps {
   onSelectCategory: (id: string | null) => void;
 }
 
-export default function CategoriesNavigation({
+const CategoriesNavigation = ({
   categories,
   selectedCategory,
   onSelectCategory,
-}: CategoriesNavigationProps) {
+}: CategoriesNavigationProps) => {
   return (
     <nav className="mb-6 overflow-x-auto border-b border-gray-200">
       <div className="flex gap-2">
@@ -34,3 +34,5 @@ export default function CategoriesNavigation({
     </nav>
   );
 }
+
+export default CategoriesNavigation;

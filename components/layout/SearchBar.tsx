@@ -7,7 +7,7 @@ interface SearchBarProps {
   onChange: (value: string) => void;
 }
 
-export default function SearchBar({ value, onChange }: SearchBarProps) {
+const SearchBar = ({ value, onChange }: SearchBarProps) => {
   const router = useRouter();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -33,3 +33,5 @@ export default function SearchBar({ value, onChange }: SearchBarProps) {
     </form>
   );
 }
+
+export default SearchBar;

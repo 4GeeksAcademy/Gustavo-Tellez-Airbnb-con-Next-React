@@ -3,7 +3,7 @@ interface RoomRatingProps {
   reviewCount: number;
 }
 
-export default function RoomRating({ rating, reviewCount }: RoomRatingProps) {
+const RoomRating = ({ rating, reviewCount }: RoomRatingProps) => {
   return (
     <div className="flex items-center gap-1 text-sm text-gray-900">
       <span className="text-rose-500">★</span>
@@ -13,3 +13,5 @@ export default function RoomRating({ rating, reviewCount }: RoomRatingProps) {
     </div>
   );
 }
+
+export default RoomRating;

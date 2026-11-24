@@ -8,7 +8,7 @@ interface RoomGalleryProps {
   title: string;
 }
 
-export default function RoomGallery({ images, title }: RoomGalleryProps) {
+const RoomGallery = ({ images, title }: RoomGalleryProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const thumbnails = images.slice(0, 5);
 
@@ -70,3 +70,5 @@ export default function RoomGallery({ images, title }: RoomGalleryProps) {
     </div>
   );
 }
+
+export default RoomGallery;

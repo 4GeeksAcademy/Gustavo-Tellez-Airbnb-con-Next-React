@@ -6,7 +6,7 @@ interface CategoryItemProps {
   onClick: () => void;
 }
 
-export default function CategoryItem({ category, selected, onClick }: CategoryItemProps) {
+const CategoryItem = ({ category, selected, onClick }: CategoryItemProps) => {
   return (
     <button
       onClick={onClick}
@@ -22,3 +22,5 @@ export default function CategoryItem({ category, selected, onClick }: CategoryIt
     </button>
   );
 }
+
+export default CategoryItem;

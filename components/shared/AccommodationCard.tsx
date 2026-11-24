@@ -7,7 +7,7 @@ interface AccommodationCardProps {
   accommodation: Accommodation;
 }
 
-export default function AccommodationCard({ accommodation }: AccommodationCardProps) {
+const AccommodationCard = ({ accommodation }: AccommodationCardProps) => {
   return (
     <Link href={`/rooms/${accommodation.id}`} className="group block">
       <AccommodationImage src={accommodation.image} alt={accommodation.title} />
@@ -20,3 +20,5 @@ export default function AccommodationCard({ accommodation }: AccommodationCardPr
     </Link>
   );
 }
+
+export default AccommodationCard;
